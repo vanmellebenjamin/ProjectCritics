@@ -52,5 +52,4 @@ https://github.com/vanmellebenjamin/ProjectCritics.git
 ```
 cd /pathToProject/Backend
 sudo npm install
-nodejs app.js
 ```

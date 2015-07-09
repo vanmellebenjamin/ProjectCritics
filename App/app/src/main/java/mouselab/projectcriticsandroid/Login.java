@@ -4,15 +4,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+import android.content.Context;
+
+import mouselab.projectcriticsandroid.mouselab.projectcriticsandroid.models.Session;
 
 
-public class Login extends ActionBarActivity {
+public class Login extends ActionBarActivity implements View.OnClickListener {
 
     private Button Login, Subscribe;
     private EditText Email, Password;
-
+    private Session UserSession;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,11 +25,13 @@ public class Login extends ActionBarActivity {
 
         // Setup the login view elements
         Email = (EditText) findViewById(R.id.login_email);
-        Password = (EditText) findViewById(R.id.login_email);
+        Password = (EditText) findViewById(R.id.login_password);
         Login = (Button) findViewById(R.id.login_validate_button);
         Subscribe = (Button) findViewById(R.id.login_subscribe_button);
-
+        UserSession = new Session();
         // Add the listeners on login and subscribe buttons
+        Login.setOnClickListener(this);
+        Subscribe.setOnClickListener(this);
 
     }
 
@@ -50,25 +57,34 @@ public class Login extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    OnClickListener buttonListener = new View.OnClickListener() {
-        boolean clicked = false;
-        int numClicks = 0;
+   @Override
+   public void onClick(final View v) {
+       if (Subscribe.getId() == ((Button) v).getId()) {
+           //Start subscribe activity
+       } else if (Login.getId() == ((Button) v).getId()) {
+           String email = Email.getText().toString();
+           String password = Password.getText().toString();
+           try {
+               if(UserSession.login(email, password)) {
+                   // logged
+                   Context context = getApplicationContext();
+                   CharSequence text = "Hello toast! logged on";
+                   int duration = Toast.LENGTH_SHORT;
 
-        @Override
-        public void onClick(View v) {
-            if(numClicks > 5) {
-                button.setText("STOP IT");
-            }
-            numClicks++;
-            if(clicked == false){
-                clicked = true;
-                tv2.setText("Text Changed on Button Click");
-            }
-            else
-            {
-                clicked = false;
-                tv2.setText("Click again");
-            }
-        }
-    };
+                   Toast toast = Toast.makeText(context, text, duration);
+                   toast.show();
+               } else {
+                   // not logged
+                   Context context = getApplicationContext();
+                   CharSequence text = "Hello toast! not logged on";
+                   int duration = Toast.LENGTH_SHORT;
+
+                   Toast toast = Toast.makeText(context, text, duration);
+                   toast.show();
+               }
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
+       }
+   }
 }

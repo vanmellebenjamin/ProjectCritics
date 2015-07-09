@@ -74,7 +74,7 @@ app.use(function(err, req, res, next) {
 // 1) Connect to MongoDB
 // 2) Connect to Kafka
 // 3) Start the HTTP server
-mongo.connect('mongodb://localhost:27017/twitter', function(err, db) {
+mongo.connect('mongodb://localhost:27017/Critics', function(err, db) {
     
     // TODO: error handling
     if (err) {

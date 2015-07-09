@@ -14,7 +14,7 @@ var openCollection = function(callback) {
 exports.autoLogin = function(user, pass, callback)
 {
 	openCollection(function(err, collection) {
-		collection.findOne({username:user}, function(e, o) {
+		collection.findOne({email:user}, function(e, o) {
 			if (o){
 				o.pass == pass ? callback(o) : callback(null);
 			}	else{
@@ -27,7 +27,7 @@ exports.autoLogin = function(user, pass, callback)
 exports.manualLogin = function(user, pass, callback)
 {
 	openCollection(function(err, collection) {
-		collection.findOne({username:user}, ['username', 'pass'], function(e, o) {
+		collection.findOne({email:user}, ['email', 'pass'], function(e, o) {
 			if (o == null){
 				callback('user-not-found');
 			}	else{
@@ -48,7 +48,7 @@ exports.manualLogin = function(user, pass, callback)
 exports.addNewAccount = function(newData, callback)
 {
 	openCollection(function(err, collection) {
-		collection.findOne({username:newData.username}, function(e, o) {
+		collection.findOne({email:newData.email}, function(e, o) {
 			if (o){
 				callback('username-taken');
 			}
@@ -67,11 +67,12 @@ exports.addNewAccount = function(newData, callback)
 	});
 }
 
+
 /* get User tweets */
 
 exports.getFullName = function(username, callback) {
 	openCollection(function(err, collection) {
-		collection.findOne({username: username}, ['fullname'], callback);
+		collection.findOne({email: email}, ['fullname'], callback);
 	});
 }
 

@@ -24,10 +24,10 @@ exports.autoLogin = function(user, pass, callback)
 	});
 }
 
-exports.manualLogin = function(user, pass, callback)
+exports.manualLogin = function(email, pass, callback)
 {
 	openCollection(function(err, collection) {
-		collection.findOne({email:user}, ['email', 'pass'], function(e, o) {
+		collection.findOne({email:email}, ['email', 'pass'], function(e, o) {
 			if (o == null){
 				callback('user-not-found');
 			}	else{
@@ -73,6 +73,20 @@ exports.addNewAccount = function(newData, callback)
 exports.getFullName = function(username, callback) {
 	openCollection(function(err, collection) {
 		collection.findOne({email: email}, ['fullname'], callback);
+	});
+}
+
+/* Get user info */
+
+exports.getUserInfos = function (email, callback) {
+	openCollection(function(err, collection) {
+		collection.findOne({email:email}, ['email'], function(e, o) {
+			if (o == null){
+				callback('user-not-found');
+			} else {
+				callback(null, o);
+			}
+		});
 	});
 }
 

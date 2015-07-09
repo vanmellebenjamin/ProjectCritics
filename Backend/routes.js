@@ -77,23 +77,17 @@ router.post('/validateSubscription', function(req, res) {
 
 /** Return informations about user **/
 
-router.get('/usr/:username', function(req, res) {
-    if (req.session.user === null) {
-        res.status(403).send("not authentificated").end();
-    }
-    var username= req.session.user.username;
-    var result = {isFollowing: false, fullname: ""};
-
-    AM.isFollowing(req.session.user.username, req.param('username'), function(e, o) {
-        if (e != null)
-            return console.log(e);
-        result.isFollowing = o;
-        AM.getFullName(req.param('username'), function(e, o) {
-            if (e != null)
-                return console.log(e);
-            result.fullname = o.fullname;
-            res.status(200).send(result).end();
-        });
+router.get('/usr/:email', function(req, res) {
+    var email = req.param('email');
+    AM.getUserInfos(email, function(e, o) {
+        if (!o) {
+            if (e == 'user-not-found')
+                res.status(403).send( "User not found").end();
+            else
+                res.status(403).send( "Unexpected Error").end();
+        } else {
+            res.status(200).send(o).end();
+        }
     });
 });
 

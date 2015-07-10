@@ -1,62 +1,63 @@
 package mouselab.projectcriticsandroid;
 
-import android.hardware.Camera;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
 
 /**
  * Created by benjamin on 10.07.15.
  */
-public class MainActivity extends ActionBarActivity {
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
+public class MainActivity extends AppCompatActivity {
+    // When requested, this adapter returns a DemoObjectFragment,
+    // representing an object in the collection.
+    MainActivityPagerAdapter mDemoCollectionPagerAdapter;
+    ViewPager mViewPager;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        setContentView(R.layout.main_activity);
 
-        return super.onOptionsItemSelected(item);
-    }
+        // ViewPager and its adapters use support library
+        // fragments, so use getSupportFragmentManager.
+        mDemoCollectionPagerAdapter =
+                new MainActivityPagerAdapter(
+                        getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mDemoCollectionPagerAdapter);
 
+        final ActionBar actionBar = getSupportActionBar();
 
-    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
-
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-
-            File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            if (pictureFile == null){
-                Log.d(TAG, "Error creating media file, check storage permissions: " +
-                        e.getMessage());
-                return;
+        // Specify that tabs should be displayed in the action bar.
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            public void onPageSelected(int position) {
+                actionBar.setSelectedNavigationItem(position);
+            }
+        });
+        actionBar.setTitle("");
+        // Create a tab listener that is called when the user changes tabs.
+        ActionBar.TabListener tabListener = new TabListener<Fragment>(this,"collection_fragment",Fragment.class) {
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                mViewPager.setCurrentItem(tab.getPosition());
             }
 
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: " + e.getMessage());
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                // hide the given tab
             }
-        }
-    };
+
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+                // probably ignore this event
+            }
+        };
+        actionBar.addTab(actionBar.newTab().setIcon(R.drawable.notification_template_icon_bg).setTabListener(tabListener).setText(ProfileFragment.ARG_OBJECT));
+        actionBar.addTab(actionBar.newTab().setIcon(R.drawable.notification_template_icon_bg).setTabListener(tabListener).setText(CameraFragment.ARG_OBJECT));
+        actionBar.addTab(actionBar.newTab().setIcon(R.drawable.notification_template_icon_bg).setTabListener(tabListener).setText(TopicsFragment.ARG_OBJECT));
+    }
 }

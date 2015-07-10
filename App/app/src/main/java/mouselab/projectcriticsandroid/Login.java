@@ -76,12 +76,13 @@ public class Login extends Activity implements View.OnClickListener {
         progress.dismiss();
         Error.setVisibility(View.GONE);
         Intent intent = new Intent(this, MainActivity.class);
-        //startActivity(intent);
+        startActivity(intent);
     }
 
     public void loginFailure() {
         progress.dismiss();
         Error.setVisibility(View.VISIBLE);
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

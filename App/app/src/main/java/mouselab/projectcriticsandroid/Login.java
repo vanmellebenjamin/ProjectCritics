@@ -1,5 +1,9 @@
 package mouselab.projectcriticsandroid;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,32 +11,47 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-import android.content.Context;
+import android.widget.TextView;
 
-import mouselab.projectcriticsandroid.mouselab.projectcriticsandroid.models.Session;
+import mouselab.projectcriticsandroid.mouselab.projectcriticsandroid.models.Requests;
 
 
 public class Login extends ActionBarActivity implements View.OnClickListener {
-
     private Button Login, Subscribe;
     private EditText Email, Password;
-    private Session UserSession;
+    private TextView Error;
+    private Requests Req;
+    private ProgressDialog progress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Req = new Requests();
 
         // Setup the login view elements
         Email = (EditText) findViewById(R.id.login_email);
         Password = (EditText) findViewById(R.id.login_password);
         Login = (Button) findViewById(R.id.login_validate_button);
         Subscribe = (Button) findViewById(R.id.login_subscribe_button);
-        UserSession = new Session();
+        Error = (TextView) findViewById(R.id.login_error);
+        Error.setVisibility(View.GONE);
         // Add the listeners on login and subscribe buttons
         Login.setOnClickListener(this);
         Subscribe.setOnClickListener(this);
 
+        // check if the user's credentials have been stored
+        Context context = this.getApplicationContext();
+        SharedPreferences pref = context.getSharedPreferences("CRITIC_PREFS", 0);
+        String email = pref.getString("userEmail", "EMPTY");
+        String password = pref.getString("userPassword", "EMPTY");
+
+        if (! email.equals("EMPTY")
+                && ! password.equals("EMPTY")) {
+            Email.setText(email);
+            Password.setText(password);
+            tryLoggin(email, password);
+        }
     }
 
     @Override
@@ -64,27 +83,29 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
        } else if (Login.getId() == ((Button) v).getId()) {
            String email = Email.getText().toString();
            String password = Password.getText().toString();
-           try {
-               if(UserSession.login(email, password)) {
-                   // logged
-                   Context context = getApplicationContext();
-                   CharSequence text = "Hello toast! logged on";
-                   int duration = Toast.LENGTH_SHORT;
-
-                   Toast toast = Toast.makeText(context, text, duration);
-                   toast.show();
-               } else {
-                   // not logged
-                   Context context = getApplicationContext();
-                   CharSequence text = "Hello toast! not logged on";
-                   int duration = Toast.LENGTH_SHORT;
-
-                   Toast toast = Toast.makeText(context, text, duration);
-                   toast.show();
-               }
-           } catch (Exception e) {
-               e.printStackTrace();
-           }
+           tryLoggin(email, password);
        }
    }
+
+
+    public void tryLoggin(String email, String password) {
+        progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setMessage("Connection with the server...");
+        progress.show();
+        (Req.new LoginRequest(this)).execute(email, password);
+    }
+
+    public void loginSuccess() {
+        progress.dismiss();
+        Error.setVisibility(View.GONE);
+        Intent intent = new Intent(this, MainActivity.class);
+        //startActivity(intent);
+    }
+
+    public void loginFailure() {
+        progress.dismiss();
+        Error.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, MainActivity.class);
+    }
 }

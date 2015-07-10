@@ -8,75 +8,91 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Project Critics"
         android:id="@+id/LoginTitle"
-        android:layout_marginTop="43dp"
+        android:layout_marginTop="50dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/login_validate_button"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
         android:layout_below="@+id/LoginTitle"
-        android:layout_alignEnd="@+id/LoginTitle"
-        android:layout_marginTop="208dp" />
+        android:id="@+id/login_layout">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Email:"
+                android:textStyle="bold"
+                android:id="@+id/login_email_text" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/login_email"
+                android:layout_marginLeft="50dp"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Password:"
+                android:textStyle="bold"
+                android:id="@+id/login_password_text" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:inputType="textPassword"
+                android:textStyle="bold"
+                android:id="@+id/login_password" />
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:text="Login"
+        android:id="@+id/login_validate_button"
+        android:layout_below="@+id/login_layout"
+        android:layout_alignEnd="@+id/LoginTitle"
+        android:layout_marginTop="40dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
         android:text="Subscribe"
         android:id="@+id/login_subscribe_button"
         android:layout_alignTop="@+id/login_validate_button"
         android:layout_toStartOf="@+id/login_validate_button" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_below="@+id/LoginTitle"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="31dp" />
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/login_subscribe_button"
-        android:layout_alignTop="@+id/editText"
-        android:id="@+id/login_layout">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Email"
-            android:id="@+id/login_email_text" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/login_email"
-            android:layout_gravity="center_horizontal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Password"
-            android:id="@+id/login_password_text" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:id="@+id/login_password" />
-    </LinearLayout>
+        android:text="Email or password incorrect"
+        android:id="@+id/login_error"
+        android:layout_marginTop="80dp"
+        android:layout_below="@+id/login_validate_button"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -22,9 +22,9 @@
 
 package mouselab.projectcriticsandroid.fragments;
 
-import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by Rex St. John (on behalf of AirPair.com) on 3/4/14.

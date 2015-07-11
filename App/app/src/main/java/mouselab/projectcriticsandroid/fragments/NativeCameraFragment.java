@@ -466,7 +466,7 @@ public class NativeCameraFragment extends BaseFragment {
     private File getOutputMediaFile(){
 
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "UltimateCameraGuideApp");
+                Environment.DIRECTORY_PICTURES), "Critics");
 
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import mouselab.projectcriticsandroid.fragments.CameraFragment;
+import mouselab.projectcriticsandroid.fragments.NativeCameraFragment;
 import mouselab.projectcriticsandroid.fragments.ProfileFragment;
 import mouselab.projectcriticsandroid.fragments.TopicsFragment;
 
@@ -28,7 +29,7 @@ public class MainActivityPagerAdapter extends FragmentStatePagerAdapter {
                 profileFrag.setArguments(args);
                 return profileFrag;
             case 1:
-                Fragment cameraFrag = new CameraFragment();
+                Fragment cameraFrag = new NativeCameraFragment();
                 args = new Bundle();
                 // Our object is just an integer :-P
                 args.putString(CameraFragment.ARG_OBJECT, CameraFragment.ARG_OBJECT);

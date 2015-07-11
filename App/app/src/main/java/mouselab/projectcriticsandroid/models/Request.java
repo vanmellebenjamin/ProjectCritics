@@ -1,4 +1,4 @@
-package mouselab.projectcriticsandroid.mouselab.projectcriticsandroid.models;
+package mouselab.projectcriticsandroid.models;
 
 
 import android.os.AsyncTask;

@@ -1,4 +1,4 @@
-package mouselab.projectcriticsandroid.mouselab.projectcriticsandroid.models;
+package mouselab.projectcriticsandroid.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import mouselab.projectcriticsandroid.activities.Login;
 import mouselab.projectcriticsandroid.constant.Global;
+import mouselab.projectcriticsandroid.models.Request;
 
 /**
  * Created by benjamin on 10.07.15.

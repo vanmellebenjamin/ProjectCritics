@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import mouselab.projectcriticsandroid.R;
-import mouselab.projectcriticsandroid.mouselab.projectcriticsandroid.models.Requests;
+import mouselab.projectcriticsandroid.models.Requests;
 
 
 public class Login extends Activity implements View.OnClickListener {

@@ -1,4 +1,4 @@
-package mouselab.projectcriticsandroid;
+package mouselab.projectcriticsandroid.activities;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;

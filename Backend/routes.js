@@ -18,7 +18,7 @@ router.post('/login', function(req, res) {
     }
     else {
         // attempt manual login & open collection Users
-        AM.manualLogin(req.param('email'), req.param('password'), function(e, o) {
+        AM.manualLogin(req.param('email').toLowerCase(), req.param('password'), function(e, o) {
             if (!o) {
                 if (e == 'user-not-found')
                     res.status(403).send( "User not found").end();
@@ -78,7 +78,7 @@ router.post('/validateSubscription', function(req, res) {
 /** Return informations about user **/
 
 router.get('/usr/:email', function(req, res) {
-    var email = req.param('email');
+    var email = req.param('email').toLowerCase();
     AM.getUserInfos(email, function(e, o) {
         if (!o) {
             if (e == 'user-not-found')

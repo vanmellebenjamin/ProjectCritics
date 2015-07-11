@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package mouselab.projectcriticsandroid;
+package mouselab.projectcriticsandroid.fragments;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -37,7 +37,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -48,6 +47,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import mouselab.projectcriticsandroid.R;
 
 /**
  * Take a picture directly from inside the app using this fragment.

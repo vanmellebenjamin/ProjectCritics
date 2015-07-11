@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package mouselab.projectcriticsandroid;
+package mouselab.projectcriticsandroid.fragments;
 
 import android.app.Fragment;
 import android.net.Uri;

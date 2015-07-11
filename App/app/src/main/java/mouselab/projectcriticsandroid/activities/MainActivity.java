@@ -1,14 +1,17 @@
-package mouselab.projectcriticsandroid;
+package mouselab.projectcriticsandroid.activities;
 
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
+
+import mouselab.projectcriticsandroid.fragments.ProfileFragment;
+import mouselab.projectcriticsandroid.R;
+import mouselab.projectcriticsandroid.fragments.TopicsFragment;
+import mouselab.projectcriticsandroid.fragments.CameraFragment;
 
 /**
  * Created by benjamin on 10.07.15.

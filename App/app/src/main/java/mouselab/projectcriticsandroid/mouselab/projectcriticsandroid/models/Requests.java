@@ -13,7 +13,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.util.ArrayList;
 
-import mouselab.projectcriticsandroid.Login;
+import mouselab.projectcriticsandroid.activities.Login;
 import mouselab.projectcriticsandroid.constant.Global;
 
 /**

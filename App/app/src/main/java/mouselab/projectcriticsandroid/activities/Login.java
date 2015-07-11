@@ -1,4 +1,4 @@
-package mouselab.projectcriticsandroid;
+package mouselab.projectcriticsandroid.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import mouselab.projectcriticsandroid.R;
 import mouselab.projectcriticsandroid.mouselab.projectcriticsandroid.models.Requests;
 
 
@@ -82,7 +83,5 @@ public class Login extends Activity implements View.OnClickListener {
     public void loginFailure() {
         progress.dismiss();
         Error.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 }

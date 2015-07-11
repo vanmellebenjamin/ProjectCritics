@@ -1,9 +1,13 @@
-package mouselab.projectcriticsandroid;
+package mouselab.projectcriticsandroid.activities;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import mouselab.projectcriticsandroid.fragments.CameraFragment;
+import mouselab.projectcriticsandroid.fragments.ProfileFragment;
+import mouselab.projectcriticsandroid.fragments.TopicsFragment;
 
 /**
  * Created by Jef on 10/07/2015.

@@ -8,10 +8,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
+import mouselab.projectcriticsandroid.fragments.NativeCameraFragment;
 import mouselab.projectcriticsandroid.fragments.ProfileFragment;
 import mouselab.projectcriticsandroid.R;
 import mouselab.projectcriticsandroid.fragments.TopicsFragment;
-import mouselab.projectcriticsandroid.fragments.CameraFragment;
 
 /**
  * Created by benjamin on 10.07.15.
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         // fragments, so use getSupportFragmentManager.
         mDemoCollectionPagerAdapter =
                 new MainActivityPagerAdapter(
-                        getSupportFragmentManager());
+                        getSupportFragmentManager(), this);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mDemoCollectionPagerAdapter);
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         actionBar.addTab(actionBar.newTab().setIcon(R.drawable.notification_template_icon_bg).setTabListener(tabListener).setText(ProfileFragment.ARG_OBJECT));
-        actionBar.addTab(actionBar.newTab().setIcon(R.drawable.notification_template_icon_bg).setTabListener(tabListener).setText(CameraFragment.ARG_OBJECT));
+        actionBar.addTab(actionBar.newTab().setIcon(R.drawable.notification_template_icon_bg).setTabListener(tabListener).setText(NativeCameraFragment.ARG_OBJECT));
         actionBar.addTab(actionBar.newTab().setIcon(R.drawable.notification_template_icon_bg).setTabListener(tabListener).setText(TopicsFragment.ARG_OBJECT));
     }
 }

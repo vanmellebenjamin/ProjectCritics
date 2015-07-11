@@ -27,14 +27,11 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -60,6 +57,7 @@ import mouselab.projectcriticsandroid.R;
  * Created by Rex St. John (on behalf of AirPair.com) on 3/4/14.
  */
 public class NativeCameraFragment extends BaseFragment {
+    public static final String ARG_OBJECT = "Camera";
 
     // Native camera.
     private Camera mCamera;
@@ -364,31 +362,7 @@ public class NativeCameraFragment extends BaseFragment {
                 int previewWidth = width;
                 int previewHeight = height;
 
-                if (mPreviewSize != null){
-                    Display display = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-
-                    switch (display.getRotation())
-                    {
-                        case Surface.ROTATION_0:
-                            previewWidth = mPreviewSize.height;
-                            previewHeight = mPreviewSize.width;
-                            mCamera.setDisplayOrientation(90);
-                            break;
-                        case Surface.ROTATION_90:
-                            previewWidth = mPreviewSize.width;
-                            previewHeight = mPreviewSize.height;
-                            break;
-                        case Surface.ROTATION_180:
-                            previewWidth = mPreviewSize.height;
-                            previewHeight = mPreviewSize.width;
-                            break;
-                        case Surface.ROTATION_270:
-                            previewWidth = mPreviewSize.width;
-                            previewHeight = mPreviewSize.height;
-                            mCamera.setDisplayOrientation(180);
-                            break;
-                    }
-                }
+                mCamera.setDisplayOrientation(90);
 
                 final int scaledChildHeight = previewHeight * width / previewWidth;
                 mCameraView.layout(0, height - scaledChildHeight, width, height);

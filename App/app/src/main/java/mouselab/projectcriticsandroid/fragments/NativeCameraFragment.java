@@ -32,8 +32,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 
@@ -58,6 +58,9 @@ import mouselab.projectcriticsandroid.R;
  */
 public class NativeCameraFragment extends BaseFragment {
     public static final String ARG_OBJECT = "Camera";
+
+    private boolean inPreview = false;
+    private static int currentCameraId = currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
 
     // Native camera.
     private Camera mCamera;
@@ -109,7 +112,7 @@ public class NativeCameraFragment extends BaseFragment {
         }
 
         // Trap the capture button.
-        Button captureButton = (Button) view.findViewById(R.id.button_capture);
+        ImageButton captureButton = (ImageButton) view.findViewById(R.id.button_capture);
         captureButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -120,6 +123,31 @@ public class NativeCameraFragment extends BaseFragment {
                 }
         );
 
+        // setup switch buttons
+        ImageButton switchCameraButton = (ImageButton) view.findViewById(R.id.swich_camera);
+
+        // if the device has ONE camera, we hide this button
+        if(Camera.getNumberOfCameras() == 1){
+            switchCameraButton.setVisibility(View.INVISIBLE);
+        }
+        // we allow the button to swith between front and back cameras
+        else {
+            switchCameraButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //swap the id of the camera to be used
+                    if (currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                        currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                    } else {
+                        currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                    }
+                    mPreview.reStartCameraPreview();
+                }
+            });
+            if (inPreview) {
+                mCamera.stopPreview();
+            }
+        }
         return view;
     }
 
@@ -151,7 +179,7 @@ public class NativeCameraFragment extends BaseFragment {
     public static Camera getCameraInstance(){
         Camera c = null;
         try {
-            c = Camera.open(); // attempt to get a Camera instance
+            c = Camera.open(currentCameraId); // attempt to get a Camera instance
         }
         catch (Exception e){
             e.printStackTrace();
@@ -240,6 +268,24 @@ public class NativeCameraFragment extends BaseFragment {
             try{
                 mCamera.setPreviewDisplay(mHolder);
                 mCamera.startPreview();
+                mCamera.setDisplayOrientation(90);
+                inPreview = true;
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        /**
+         * Begin the preview of the camera input.
+         */
+        public void reStartCameraPreview()
+        {
+            try {
+                mCamera.release();
+
+                setCamera(getCameraInstance());
+                startCameraPreview();
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -361,9 +407,7 @@ public class NativeCameraFragment extends BaseFragment {
 
                 int previewWidth = width;
                 int previewHeight = height;
-
-                mCamera.setDisplayOrientation(90);
-
+                
                 final int scaledChildHeight = previewHeight * width / previewWidth;
                 mCameraView.layout(0, height - scaledChildHeight, width, height);
             }

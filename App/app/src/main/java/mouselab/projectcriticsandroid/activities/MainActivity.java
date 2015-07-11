@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         // Create a tab listener that is called when the user changes tabs.
         ActionBar.TabListener tabListener = new TabListener<Fragment>(this,"collection_fragment",Fragment.class) {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+
                 mViewPager.setCurrentItem(tab.getPosition());
             }
 

@@ -407,7 +407,7 @@ public class NativeCameraFragment extends BaseFragment {
 
                 int previewWidth = width;
                 int previewHeight = height;
-                
+
                 final int scaledChildHeight = previewHeight * width / previewWidth;
                 mCameraView.layout(0, height - scaledChildHeight, width, height);
             }

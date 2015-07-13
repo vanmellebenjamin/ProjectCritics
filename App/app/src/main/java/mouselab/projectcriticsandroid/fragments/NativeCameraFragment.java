@@ -23,27 +23,21 @@
 package mouselab.projectcriticsandroid.fragments;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.hardware.Camera;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,8 +58,7 @@ public class NativeCameraFragment extends BaseFragment {
     public static final String ARG_OBJECT = "Camera";
 
     private boolean inPreview = false;
-    private static int currentCameraId = currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
-
+    private static int currentCameraId = currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
     // Native camera.
     private Camera mCamera;
 
@@ -105,64 +98,16 @@ public class NativeCameraFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_native_camera, container, false);
-        mCameraView = view.findViewById(R.id.camera_preview);
+        final View view = inflater.inflate(R.layout.fragment_native_camera, container, false);
+
         // Create our Preview view and set it as the content of our activity.
         boolean opened = safeCameraOpenInView(view);
 
         if(opened == false){
-            Log.d("CameraGuide","Error, Camera failed to open");
+            Log.d("CameraGuide", "Error, Camera failed to open");
             return view;
         }
 
-        // Tap the capture button.
-        ImageButton captureButton = (ImageButton) view.findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // get an image from the camera
-                        mCamera.takePicture(null, null, mPicture);
-                    }
-                }
-        );
-        captureButton.setOnLongClickListener(new View.OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                mCamera.unlock();
-                mPreview.setCamera(mCamera);
-                return false;
-            }
-        });
-
-
-
-        // setup switch buttons
-        ImageButton switchCameraButton = (ImageButton) view.findViewById(R.id.swich_camera);
-
-        // if the device has ONE camera, we hide this button
-        if(Camera.getNumberOfCameras() == 1){
-            switchCameraButton.setVisibility(View.INVISIBLE);
-        }
-        // we allow the button to swith between front and back cameras
-        else {
-            switchCameraButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //swap the id of the camera to be used
-                    if (currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                        currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
-                    } else {
-                        currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-                    }
-                    mPreview.reStartCameraPreview();
-                }
-            });
-            if (inPreview) {
-                mCamera.stopPreview();
-            }
-        }
         return view;
     }
 
@@ -173,15 +118,34 @@ public class NativeCameraFragment extends BaseFragment {
      */
     private boolean safeCameraOpenInView(View view) {
         boolean qOpened = false;
-        //releaseCameraAndPreview();
+        releaseCameraAndPreview();
+        mCamera = getCameraInstance();
+        mCameraView = view;
+        qOpened = (mCamera != null);
+
+        if(qOpened == true) {
+            mPreview = new CameraPreview(getActivity().getBaseContext(), mCamera,view);
+            FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_preview);
+            preview.addView(mPreview);
+            mPreview.startCameraPreview();
+        }
+        return qOpened;
+    }
+
+    /**
+     * Recommended "safe" way to open the camera.
+     * @param view
+     * @return
+     */
+    private boolean switchSafeCameraOpenInView(View view) {
+        boolean qOpened = false;
+        releaseCameraAndPreview();
         mCamera = getCameraInstance();
         mCameraView = view;
         qOpened = (mCamera != null);
 
         if(qOpened == true){
-            mPreview = new CameraPreview(getActivity().getBaseContext(), mCamera,view);
-            FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_preview);
-            preview.addView(mPreview);
+            mPreview.setCamera(mCamera);
             mPreview.startCameraPreview();
         }
         return qOpened;
@@ -237,6 +201,8 @@ public class NativeCameraFragment extends BaseFragment {
      */
     class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
+        private boolean recording = false;
+
         // SurfaceHolder
         private SurfaceHolder mHolder;
 
@@ -252,15 +218,16 @@ public class NativeCameraFragment extends BaseFragment {
         // List of supported preview sizes
         private List<Camera.Size> mSupportedPreviewSizes;
 
-        // Flash modes supported by this camera
-        private List<String> mSupportedFlashModes;
-
         // View holding this camera.
         private View mCameraView;
 
+        private MediaRecorder recorder;
+
+        private View view;
+
         public CameraPreview(Context context, Camera camera, View cameraView) {
             super(context);
-
+            this.view = cameraView;
             // Capture the context
             mCameraView = cameraView;
             mContext = context;
@@ -273,6 +240,67 @@ public class NativeCameraFragment extends BaseFragment {
             mHolder.setKeepScreenOn(true);
             // deprecated setting, but required on Android versions prior to 3.0
             mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+            // setup switch buttons
+            final ImageButton switchCameraButton = (ImageButton) view.findViewById(R.id.swich_camera);
+
+            // Trap the capture button.
+            ImageButton captureButton = (ImageButton) view.findViewById(R.id.button_capture);
+            captureButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (recording) {
+                                recorder.stop();
+                                recording = false;
+
+                                // restart camera preview
+                                switchSafeCameraOpenInView(view);
+                                initRecorder();
+                                // if the device has ONE camera, we hide this button
+                                if(Camera.getNumberOfCameras() == 1){
+                                    switchCameraButton.setVisibility(View.INVISIBLE);
+                                } else  {
+                                    switchCameraButton.setVisibility(View.GONE);
+                                }
+                            } else {
+                                // stop the preview
+                                releaseCameraAndPreview();
+                                switchCameraButton.setVisibility(View.INVISIBLE);
+                                // start the record
+                                recording = true;
+                                prepareRecorder();
+                                recorder.start();
+                            }
+                        }
+                    }
+            );
+
+
+
+            // if the device has ONE camera, we hide this button
+            if(Camera.getNumberOfCameras() == 1){
+                switchCameraButton.setVisibility(View.INVISIBLE);
+            }
+
+            // we allow the button to swith between front and back camera
+            else {
+                switchCameraButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //swap the id of the camera to be used
+                        if (currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                        } else {
+                            currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                        }
+                        switchSafeCameraOpenInView(view);
+                    }
+                });
+            }
+
+            // Set recorder
+            initRecorder();
         }
 
         /**
@@ -316,14 +344,6 @@ public class NativeCameraFragment extends BaseFragment {
             // Source: http://stackoverflow.com/questions/7942378/android-camera-will-not-work-startpreview-fails
             mCamera = camera;
             mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
-            mSupportedFlashModes = mCamera.getParameters().getSupportedFlashModes();
-
-            // Set the camera to Auto Flash mode.
-            if (mSupportedFlashModes != null && mSupportedFlashModes.contains(Camera.Parameters.FLASH_MODE_AUTO)){
-                Camera.Parameters parameters = mCamera.getParameters();
-                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-                mCamera.setParameters(parameters);
-            }
 
             requestLayout();
         }
@@ -345,6 +365,12 @@ public class NativeCameraFragment extends BaseFragment {
          * @param holder
          */
         public void surfaceDestroyed(SurfaceHolder holder) {
+            if (recording) {
+                recorder.stop();
+                recording = false;
+            }
+            recorder.release();
+            // finish();
             if (mCamera != null){
                 mCamera.stopPreview();
             }
@@ -460,62 +486,40 @@ public class NativeCameraFragment extends BaseFragment {
 
             return optimalSize;
         }
-    }
 
-    /**
-     * Picture Callback for handling a picture capture and saving it out to a file.
-     */
-    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+        private void initRecorder() {
+            recorder = new MediaRecorder();
+            recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            //recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            recorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
 
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
+            recorder.setOrientationHint(90);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-            File pictureFile = getOutputMediaFile();
-            if (pictureFile == null){
-                Toast.makeText(getActivity(), "Image retrieval failed.", Toast.LENGTH_SHORT)
-                        .show();
-                return;
-            }
+            File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "Critics");
+            recorder.setOutputFile(mediaStorageDir.getPath() + File.separator +
+                    "videocapture_" + timeStamp + ".mp4");
+        }
 
+        private void prepareRecorder() {
+            recorder.setPreviewDisplay(mHolder.getSurface());
             try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-
-                // Restart the camera preview.
-                safeCameraOpenInView(mCameraView);
-            } catch (FileNotFoundException e) {
+                recorder.prepare();
+            } catch (IllegalStateException e) {
                 e.printStackTrace();
+                //finish();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-        }
-    };
-
-    /**
-     * Used to return the camera File output.
-     * @return
-     */
-    private File getOutputMediaFile(){
-
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "Critics");
-
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
-                Log.d("Camera Guide", "Required media storage does not exist");
-                return null;
+                //finish();
             }
         }
 
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_"+ timeStamp + ".jpg");
-        Toast.makeText(getActivity(),"Your picture has been saved!",Toast.LENGTH_SHORT).show();
-        //DialogHelper.showDialog( "Success!","Your picture has been saved!",getActivity());
-
-        return mediaFile;
+        private void finish() {
+            recorder.stop();
+            recorder.release();
+        }
     }
+
 }

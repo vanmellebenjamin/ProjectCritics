@@ -5,5 +5,4 @@ package mouselab.projectcriticsandroid.constant;
  */
 public class Global {
     public static String SERVER_ADDRESS = "http://192.168.1.11:3002";
-
 }

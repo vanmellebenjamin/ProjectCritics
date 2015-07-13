@@ -23,11 +23,15 @@
 package mouselab.projectcriticsandroid.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -102,7 +106,7 @@ public class NativeCameraFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_native_camera, container, false);
-
+        mCameraView = view.findViewById(R.id.camera_preview);
         // Create our Preview view and set it as the content of our activity.
         boolean opened = safeCameraOpenInView(view);
 
@@ -111,7 +115,7 @@ public class NativeCameraFragment extends BaseFragment {
             return view;
         }
 
-        // Trap the capture button.
+        // Tap the capture button.
         ImageButton captureButton = (ImageButton) view.findViewById(R.id.button_capture);
         captureButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -122,6 +126,17 @@ public class NativeCameraFragment extends BaseFragment {
                     }
                 }
         );
+        captureButton.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                mCamera.unlock();
+                mPreview.setCamera(mCamera);
+                return false;
+            }
+        });
+
+
 
         // setup switch buttons
         ImageButton switchCameraButton = (ImageButton) view.findViewById(R.id.swich_camera);
@@ -158,7 +173,7 @@ public class NativeCameraFragment extends BaseFragment {
      */
     private boolean safeCameraOpenInView(View view) {
         boolean qOpened = false;
-        releaseCameraAndPreview();
+        //releaseCameraAndPreview();
         mCamera = getCameraInstance();
         mCameraView = view;
         qOpened = (mCamera != null);

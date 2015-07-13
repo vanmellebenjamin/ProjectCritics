@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/abc_search_url_text_normal">
+    android:layout_height="match_parent">
 
     <TextView
         android:layout_width="wrap_content"
@@ -10,6 +9,53 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Demo Object Fragment"
         android:id="@+id/text1"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/text1"
+        android:id="@+id/tableTopics"
+        android:layout_alignParentStart="true"
+        >
+        <TableRow android:measureWithLargestChild="true"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent">
+            <ImageView android:contentDescription="Topic" android:layout_width="wrap_content" android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#ff420200"
+                android:layout_margin="5dp" />
+            <ImageView android:contentDescription="Topic" android:layout_width="wrap_content" android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#ff084200"
+                android:layout_margin="5dp" />
+            <ImageView android:contentDescription="Topic" android:layout_width="wrap_content" android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#ff000142"
+                android:layout_margin="5dp" />
+        </TableRow>
+        <TableRow android:measureWithLargestChild="true"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent">
+            <ImageView android:contentDescription="Topic" android:layout_width="wrap_content" android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#ff424100"
+                android:layout_margin="5dp" />
+            <ImageView android:contentDescription="Topic" android:layout_width="wrap_content" android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#ff004142"
+                android:layout_margin="5dp" />
+            <ImageView android:contentDescription="Topic" android:layout_width="wrap_content" android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:background="#ff420041"
+                android:layout_margin="5dp" />
+        </TableRow>
+
+
+
+    </TableLayout>
 </RelativeLayout>

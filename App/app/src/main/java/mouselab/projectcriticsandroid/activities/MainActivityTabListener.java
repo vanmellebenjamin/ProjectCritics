@@ -3,7 +3,6 @@ package mouselab.projectcriticsandroid.activities;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.app.FragmentTransaction;
 
 /**
  * Created by Jef on 10/07/2015.
